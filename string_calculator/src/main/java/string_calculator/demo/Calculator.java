@@ -1,30 +1,29 @@
 package string_calculator.demo;
 
-public class Calculator extends Operator {
+public class Calculator{
+    final int NUMBER_FOR_CALCULATE = 1;
+    final int NUMBER_FOR_FIND_OPERATOR = 2;
+    public void calculate() {
+        double result = 0;
+        result += Double.parseDouble(Input.formula.get(0));
 
-    public void calculate(String[] formula) {
-        Double result = 0.0;
-        for (int index = 0; index < formula.length; index++) {
-            switch (formula[index]) {
-                case "+":
-                    result = plus(formula[index - 1], formula[index + 1]);
-                    formula[index + 1] = result.toString();
-                    break;
-                case "-":
-                    result = subtract(formula[index - 1], formula[index + 1]);
-                    formula[index + 1] = result.toString();
-                    break;
-                case "*":
-                    result = multiple(formula[index - 1], formula[index + 1]);
-                    formula[index + 1] = result.toString();
-                    break;
-                case "/":
-                    result = divide(formula[index - 1], formula[index + 1]);
-                    formula[index + 1] = result.toString();
-                    break;
-                default:
-                    break;
+        for (int index = 1; index < Input.formula.size(); index += NUMBER_FOR_FIND_OPERATOR) {
+            if (isNumber(Input.formula.get(index))) {
+                System.out.println("입력오류");
             }
+            String operatorInFormula =  Input.formula.get(index);
+            Operator operator = Operator.of(operatorInFormula);
+            result = operator.calculate(result, Input.formula.get(index + NUMBER_FOR_CALCULATE));
+        }
+        System.out.println(result);
+    }
+    boolean isNumber(String stringInFormula) {
+        try {
+            Double.parseDouble(stringInFormula);
+            return true;
+        }
+        catch (NumberFormatException e) {
+            return false;
         }
     }
 }

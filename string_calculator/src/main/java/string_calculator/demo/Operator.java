@@ -1,31 +1,37 @@
 package string_calculator.demo;
 
-public class Operator {
-    protected double plus(String x, String y) {
-        double num1 = Double.parseDouble(x);
-        double num2 = Double.parseDouble(y);
+import java.util.Collections;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-        return num1 + num2;
+public enum Operator {
+    PLUS("+") {
+        double calculate(double result, String x) { return result + Double.parseDouble(x); }
+    },
+    DIVIDE("/") {
+        double calculate(double result, String x) { return result / Double.parseDouble(x); }
+    },
+    MULTIPLE("*") {
+        double calculate(double result, String x) { return result * Double.parseDouble(x); }
+    },
+    SUBSTRACT("-") {
+        double calculate(double result, String x) { return result - Double.parseDouble(x); }
+    };
+    private String code;
+    private static final Map<String, String> CODE_MAP = Collections.unmodifiableMap(
+            Stream.of(values()).collect(Collectors.toMap(Operator::getCode, Operator::name)));
+
+    private String getCode() {
+        return this.code;
     }
 
-    protected double divide(String x, String y) {
-        double num1 = Double.parseDouble(x);
-        double num2 = Double.parseDouble(y);
-
-        return num1 / num2;
+    abstract double calculate(double result, String x);
+    Operator(String symbol) {
+        this.code = symbol;
     }
 
-    protected double multiple(String x, String y) {
-        double num1 = Double.parseDouble(x);
-        double num2 = Double.parseDouble(y);
-
-        return num1 * num2;
-    }
-
-    protected double subtract(String x, String y) {
-        double num1 = Double.parseDouble(x);
-        double num2 = Double.parseDouble(y);
-
-        return num1 - num2;
+    public static Operator of(String code) {
+        return Operator.valueOf(CODE_MAP.get(code));
     }
 }
